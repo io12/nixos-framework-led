@@ -73,8 +73,8 @@ in lib.mkMerge [
       description = "Change Framework power LED during fprintd events";
       serviceConfig = {
         User = cfg.user;
-        ExecStart =
-          import ./fprint-script.nix { inherit pkgs lib cfg shellLed; };
+        ExecStart = lib.getExe
+          (import ./fprint-script.nix { inherit pkgs lib cfg shellLed; });
       };
     };
   })
