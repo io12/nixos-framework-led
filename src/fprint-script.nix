@@ -60,7 +60,7 @@ pkgs.stdenv.mkDerivation {
   passAsFile = [ "src" ];
   nativeBuildInputs = with pkgs; [
     gobject-introspection
-    wrapGAppsHook
+    wrapGAppsNoGuiHook
   ];
   buildInputs = [ (pkgs.python3.withPackages (ps: with ps; [ pydbus ])) ];
   dontUnpack = true;
