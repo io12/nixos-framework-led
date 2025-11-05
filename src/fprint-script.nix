@@ -1,4 +1,9 @@
-{ pkgs, lib, cfg, shellLed }:
+{
+  pkgs,
+  lib,
+  cfg,
+  shellLed,
+}:
 
 let
 
@@ -13,14 +18,19 @@ let
     from time import sleep
 
 
-    ${if builtins.isNull cfg.fprint.flashDuration then ''
-      def off():
-          pass
-    '' else ''
-      def off():
-          sleep(${lib.strings.floatToString (cfg.fprint.flashDuration)})
-          system("${shellLed cfg.default.color}")
-    ''}
+    ${
+      if builtins.isNull cfg.fprint.flashDuration then
+        ''
+          def off():
+              pass
+        ''
+      else
+        ''
+          def off():
+              sleep(${lib.strings.floatToString (cfg.fprint.flashDuration)})
+              system("${shellLed cfg.default.color}")
+        ''
+    }
 
 
     def callback(_, __, ___, signal_name, fields):
@@ -44,10 +54,14 @@ let
     loop.run()
   '';
 
-in pkgs.stdenv.mkDerivation {
+in
+pkgs.stdenv.mkDerivation {
   inherit name src;
   passAsFile = [ "src" ];
-  nativeBuildInputs = with pkgs; [ gobject-introspection wrapGAppsHook ];
+  nativeBuildInputs = with pkgs; [
+    gobject-introspection
+    wrapGAppsHook
+  ];
   buildInputs = [ (pkgs.python3.withPackages (ps: with ps; [ pydbus ])) ];
   dontUnpack = true;
   buildPhase = ''

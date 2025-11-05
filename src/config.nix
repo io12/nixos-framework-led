@@ -1,10 +1,14 @@
-{ config, lib, pkgs }:
+{
+  config,
+  lib,
+  pkgs,
+}:
 
 let
   cfg = config.services.framework-led;
 
-  somethingEnabled = cfg.default.setOnBoot || cfg.fprint.enable
-    || cfg.shell.enableBash || cfg.shell.enableZsh;
+  somethingEnabled =
+    cfg.default.setOnBoot || cfg.fprint.enable || cfg.shell.enableBash || cfg.shell.enableZsh;
 
   shellLed = color: "${config.security.wrapperDir}/framework-led ${color}";
 
@@ -27,7 +31,8 @@ let
     trap '${shellLed cfg.default.color}' EXIT
   '';
 
-in lib.mkMerge [
+in
+lib.mkMerge [
 
   # Normally ectool requires root.
   # Create a setuid wrapper so other users can use it.
@@ -73,8 +78,16 @@ in lib.mkMerge [
       description = "Change Framework power LED during fprintd events";
       serviceConfig = {
         User = cfg.user;
-        ExecStart = lib.getExe
-          (import ./fprint-script.nix { inherit pkgs lib cfg shellLed; });
+        ExecStart = lib.getExe (
+          import ./fprint-script.nix {
+            inherit
+              pkgs
+              lib
+              cfg
+              shellLed
+              ;
+          }
+        );
       };
     };
   })
